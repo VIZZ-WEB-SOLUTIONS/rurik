@@ -28,12 +28,15 @@ impl Cron {
     }
 
     async fn execute_command(&self) {
+        print!("CRON::{} =>", self.name);
         let _ = Command::new("sh")
             .arg("-c")
             .arg(self.command.clone())
             .stdout(Stdio::inherit())
             .status()
             .await;
+        println!("end::{}", self.name);
+        
     }
 }
 
