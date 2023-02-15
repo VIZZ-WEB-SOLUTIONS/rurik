@@ -29,16 +29,15 @@ impl Cron {
 
     fn execute_command(&self) {
         println!("{} => ", self.name);
-        let x = |command: String| {
-            tokio::spawn(async move {
-                let _ = Command::new("sh")
-                    .arg("-c")
-                    .arg(command.clone())
-                    .stdout(Stdio::inherit())
-                    .status().await;
-            });
-        };
-        x(self.command.clone());
+        let command = self.command.clone();
+
+        tokio::spawn(async {
+            let _ = Command::new("sh")
+                .arg("-c")
+                .arg(command)
+                .stdout(Stdio::inherit())
+                .status().await;
+        });
     }
 }
 
