@@ -35,7 +35,7 @@ impl Cron {
             .stdout(Stdio::inherit())
             .status()
             .await;
-        println!("end::{}", self.name);
+        println!("end");
         
     }
 }
