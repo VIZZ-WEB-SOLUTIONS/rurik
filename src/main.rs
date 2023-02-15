@@ -23,20 +23,22 @@ impl Cron {
     async fn start_cron(&self) {
         loop {
             sleep(Duration::from_millis(self.sleep_time)).await;
-            self.execute_command().await;
+            self.execute_command();
         }
     }
 
-    async fn execute_command(&self) {
-        print!("CRON::{} =>", self.name);
-        let _ = Command::new("sh")
-            .arg("-c")
-            .arg(self.command.clone())
-            .stdout(Stdio::inherit())
-            .status()
-            .await;
-        println!("end");
-        
+    fn execute_command(&self) {
+        println!("{} => ", self.name);
+        let x = |command: String| {
+            tokio::spawn(async move {
+                let _ = Command::new("sh")
+                    .arg("-c")
+                    .arg(command.clone())
+                    .stdout(Stdio::inherit())
+                    .status().await;
+            });
+        };
+        x(self.command.clone());
     }
 }
 
